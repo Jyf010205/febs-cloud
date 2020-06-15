@@ -24,7 +24,7 @@ import java.util.Set;
 
 /**
  * @author: jianyufeng
- * @description:
+ * @description: 限流过滤器
  * @date: 2020/6/12 17:17
  */
 @Slf4j
@@ -45,12 +45,17 @@ public class FebsGatewaySentinelFilter {
         return new SentinelZuulErrorFilter();
     }
 
+    //自定义异常响应注册到过滤器中
     @PostConstruct
     public void doInit(){
         ZuulBlockFallbackManager.registerProvider(new FebsGatewayBlockFallbackProvider());
         initGatewayRules();
     }
 
+    /**
+     * 定义验证码请求限流，限流规则：
+     *  60秒内同一个IP，同一个 key最多访问 10次
+     */
     private void initGatewayRules() {
         Set<ApiDefinition> definitions = new HashSet<>();
         Set<ApiPredicateItem> predicateItems = new HashSet<>();

@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 
 /**
  * @author: jianyufeng
- * @description:
+ * @description: 我们使用@Import将FebsAuthExceptionConfigure配置类引入了进来。
  * @date: 2020/6/2 16:21
  */
 

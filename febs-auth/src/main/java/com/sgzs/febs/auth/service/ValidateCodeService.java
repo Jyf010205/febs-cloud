@@ -65,8 +65,13 @@ public class ValidateCodeService {
         }
     }
 
+    /**
+     * 生成相应的验证码
+     * @param code
+     * @return
+     */
     private Captcha createCaptcha(FebsValidateCodeProperties code) {
-        Captcha captcha = null;
+        Captcha captcha ;
         if (StringUtils.equalsIgnoreCase(code.getType(), FebsConstant.GIF)) {
             captcha = new GifCaptcha(code.getWidth(),code.getHeight(),code.getLength());
         }else {
@@ -76,6 +81,11 @@ public class ValidateCodeService {
         return captcha;
     }
 
+    /**
+     * 用于设置响应头
+     * @param response
+     * @param type
+     */
     private void setHeader(HttpServletResponse response, String type) {
         if (StringUtils.equalsIgnoreCase(type, FebsConstant.GIF)) {
             response.setContentType(MediaType.IMAGE_GIF_VALUE);

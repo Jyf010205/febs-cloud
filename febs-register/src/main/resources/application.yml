@@ -6,6 +6,7 @@ server:
 spring:
   application:
     name: FEBS-Register
+  #受保护资源所需的用户名和密码
   security:
     user:
       name: febs
@@ -15,7 +16,9 @@ eureka:
   instance:
     hostname: localhost
   client:
+    #是否将服务注册到注册中心，单节点false
     register-with-eureka: false
+    #是否从注册中心获取信息，单节点 false
     fetch-registry: false
     instance-info-replication-interval-seconds: 30
     serviceUrl:

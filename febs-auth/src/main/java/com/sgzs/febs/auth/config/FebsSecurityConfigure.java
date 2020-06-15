@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -15,7 +14,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 /**
  * @author: jianyufeng
- * @description: 安全配置类
+ * @description: 安全配置类 过滤器
+ * FebsSecurityConfigure用于处理/oauth开头的请求，Spring Cloud OAuth内部定义的获取令牌，刷新令牌的请求地址都是以/oauth/开头的，也就是说FebsSecurityConfigure用于处理和令牌相关的请求；
+ * 资源ResourceServerConfigurerAdapter order 为 3
  * @date: 2020/5/28 16:38
  */
 @Order(2)
@@ -37,6 +38,10 @@ public class FebsSecurityConfigure extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //(requestMatchers())->FebsSecurityConfigure安全配置类只对/oauth/开头的请求有效。
+        /**
+         * 将ValidateCodeFilter过滤器添加到Spring Security过滤器链中，
+         * 并且位于UsernamePasswordAuthenticationFilter过滤器前
+         */
         http.addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
                 .requestMatchers()
                 .antMatchers("/oauth/**")
@@ -45,10 +50,5 @@ public class FebsSecurityConfigure extends WebSecurityConfigurerAdapter {
                 .antMatchers("/oauth/**").authenticated()
             .and()
                 .csrf().disable();
-    }
-
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(UserDetailService).passwordEncoder(passwordEncoder);
     }
 }

@@ -7,6 +7,9 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 
+/**
+ * @EnableFeignClients注解标注，开启FeignClient功能
+ */
 @EnableFeignClients
 @EnableDiscoveryClient
 @SpringBootApplication

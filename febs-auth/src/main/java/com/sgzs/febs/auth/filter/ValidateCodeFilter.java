@@ -21,7 +21,7 @@ import java.io.IOException;
 
 /**
  * @author: jianyufeng
- * @description:
+ * @description: 用于拦截请求并校验验证码的正确性
  * @date: 2020/6/12 16:15
  */
 @Slf4j

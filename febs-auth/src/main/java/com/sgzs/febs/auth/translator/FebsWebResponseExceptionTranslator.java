@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * @author: jianyufeng
- * @description: 异常翻译器
+ * @description: 异常翻译器，将这些认证类型异常翻译为友好的格式
  * @date: 2020/6/2 15:37
  */
 @Component

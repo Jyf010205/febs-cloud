@@ -6,7 +6,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 /**
  * @author: jianyufeng
- * @description:
+ * @description: 使用security保护微服务注册中心
  * @date: 2020/5/28 15:39
  */
 @EnableWebSecurity

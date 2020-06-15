@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  * @author: jianyufeng
- * @description:
+ * @description: 把拦截器加入配置，拦截Zuul token
  * @date: 2020/6/9 17:37
  */
 public class FebsServerProtectConfigure implements WebMvcConfigurer {

@@ -8,7 +8,7 @@ import org.springframework.core.type.AnnotationMetadata;
 
 /**
  * @author: jianyufeng
- * @description:
+ * @description: 通过selectImports方法，我们一次性导入了FebsAuthExceptionConfigure、FebsOAuth2FeignConfigure和FebsServerProtectConfigure这三个配置类。
  * @date: 2020/6/9 20:59
  */
 public class FebsCloudApplicationSelector implements ImportSelector {

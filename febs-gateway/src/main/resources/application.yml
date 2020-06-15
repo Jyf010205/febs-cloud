@@ -4,6 +4,7 @@ server:
 spring:
   application:
     name: FEBS-Gateway
+  #关闭数据库自动装配
   autoconfigure:
     exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 
@@ -23,6 +24,7 @@ zuul:
     auth:
       path: /auth/**
       serviceId: FEBS-Auth
+      #表示不过滤请求头信息，即请求的请求头信息将原封不动的转发出去
       sensitiveHeaders: "*"
     system:
       path: /system/**
@@ -37,6 +39,7 @@ zuul:
   ribbon:
     eager-load:
       enabled: true
+  #让默认的异常过滤器失效
   SendErrorFilter:
     error:
       disable: true

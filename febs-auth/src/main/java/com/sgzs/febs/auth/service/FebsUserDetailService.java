@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * @author: jianyufeng
- * @description:模拟数据库返回的信息
+ * @description: 通过查询数据库 user
  * @date: 2020/5/28 17:07
  */
 @Service

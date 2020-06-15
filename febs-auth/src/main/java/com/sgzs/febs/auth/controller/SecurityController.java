@@ -23,6 +23,7 @@ import java.security.Principal;
  */
 @RestController
 public class SecurityController {
+    //FebsAuthorizationServerConfigure中注册的bean
     @Autowired
     private ConsumerTokenServices consumerTokenServices;
 

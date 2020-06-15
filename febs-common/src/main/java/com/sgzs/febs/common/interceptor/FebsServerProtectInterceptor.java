@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  * @author: jianyufeng
- * @description:
+ * @description: 校验Zuul Token,并校验其正确性，当校验不通过的时候返回403错误
  * @date: 2020/6/9 17:31
  */
 public class FebsServerProtectInterceptor implements HandlerInterceptor {

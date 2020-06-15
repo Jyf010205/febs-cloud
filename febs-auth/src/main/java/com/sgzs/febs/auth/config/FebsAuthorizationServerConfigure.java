@@ -24,15 +24,19 @@ import org.springframework.security.oauth2.provider.token.store.redis.RedisToken
 
 /**
  * @author: jianyufeng
- * @description: @EnableAuthorizationServer接管路径/oauth/token
+ * @description: @EnableAuthorizationServer接管路径/oauth/token oauth2.0验证
  *               认证方式：clients.inMemory()
  * @date: 2020/5/28 16:50
  */
 @Configuration
 @EnableAuthorizationServer
 public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigurerAdapter {
+    /**
+     * FebsSecurityConfigure注入的BeanAuthenticationManager、PasswordEncoder
+     */
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private RedisConnectionFactory redisConnectionFactory;
     @Autowired
@@ -47,6 +51,12 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         FebsClientsProperties[] clientsArray = authProperties.getClients();
+        /**
+         * 1.客户端从认证服务器获取令牌的时候，必须使用client_id为febs，client_secret为123456的标识来获取；
+         * 2.该client_id支持password模式获取令牌，并且可以通过refresh_token来获取新的令牌；
+         * 3.在获取client_id为febs的令牌的时候，scope只能指定为all，否则将获取失败；
+         * 4。请求头Authorization   Basic client_id:client_secret
+         */
 //        clients.inMemory()
 //                .withClient("febs")
 //                .secret(passwordEncoder.encode("123456"))
@@ -70,6 +80,10 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
         }
     }
 
+    /**
+     * 认证异常翻译器生效
+     * @param endpoints
+     */
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
         endpoints.tokenStore(tokenStore())

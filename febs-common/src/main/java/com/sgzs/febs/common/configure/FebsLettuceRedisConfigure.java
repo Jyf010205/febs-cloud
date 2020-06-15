@@ -15,7 +15,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * @author: jianyufeng
- * @description:
+ * @description: Spring Boot 2.0后推荐使用Lettuce来代替Jedis，Lettuce基于Netty异步
  * @date: 2020/6/10 14:05
  */
 public class FebsLettuceRedisConfigure {
