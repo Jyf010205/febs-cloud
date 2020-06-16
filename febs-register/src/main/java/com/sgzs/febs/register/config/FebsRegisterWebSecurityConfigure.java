@@ -13,7 +13,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 public class FebsRegisterWebSecurityConfigure extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().ignoringAntMatchers("/eureka/**");
+        http.csrf().ignoringAntMatchers("/eureka/**")
+                .and()
+                //Spring Boot Admin是通过spring-boot-starter-actuator提供的/actuator/**监控接口来实现的，
+                // 而我们的微服务都是受Spring Cloud Security保护的，所以我们需要将/actuator/**资源纳入到免认证路径中
+                .authorizeRequests().antMatchers("/actuator/**").permitAll();
         super.configure(http);
     }
 }
