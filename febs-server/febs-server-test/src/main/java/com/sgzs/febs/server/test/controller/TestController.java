@@ -1,6 +1,7 @@
 package com.sgzs.febs.server.test.controller;
 
 import com.sgzs.febs.server.test.service.IHelloService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,7 @@ import java.security.Principal;
  * @description:
  * @date: 2020/5/29 17:10
  */
+@Slf4j
 @RestController
 public class TestController {
     @Autowired
@@ -35,8 +37,9 @@ public class TestController {
         return principal;
     }
 
-    @GetMapping
+    @GetMapping("hello")
     public String hello(String name){
+        log.info("Feign调用febs-server-system的/hello服务");
         return helloService.hello(name);
     }
 }

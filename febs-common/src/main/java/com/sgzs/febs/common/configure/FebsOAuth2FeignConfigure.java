@@ -19,7 +19,7 @@ public class FebsOAuth2FeignConfigure {
     public RequestInterceptor oauth2FeignRequestInterceptor(){
         return requestTemplate -> {
             //请求头添加Zuul Token
-            String zuulToken = new String(Base64Utils.encode(FebsConstant.ZUUL_TOKEN_HEADER.getBytes()));
+            String zuulToken = new String(Base64Utils.encode(FebsConstant.ZUUL_TOKEN_VALUE.getBytes()));
             requestTemplate.header(FebsConstant.ZUUL_TOKEN_HEADER,zuulToken);
 
             //Feign上加入令牌信息
