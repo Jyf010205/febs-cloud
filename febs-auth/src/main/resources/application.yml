@@ -6,7 +6,7 @@ spring:
     name: FEBS-Auth
   redis:
     database: 0
-    host: 119.45.15.131
+    host: 180.76.136.193
     port: 6379
     lettuce:
       pool:

@@ -1,6 +1,5 @@
 package com.sgzs.febs.gateway;
 
-import com.sgzs.febs.common.annotation.EnableFebsLettuceRedis;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -8,7 +7,6 @@ import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFebsLettuceRedis
 @EnableZuulProxy
 public class FebsGatewayApplication {
 

@@ -28,17 +28,20 @@ spring:
         url: http://localhost:8401
         username: febs
         password: 123456
-  redis:
-    database: 0
-    host: 119.45.15.131
-    port: 6379
-    lettuce:
-      pool:
-        min-idle: 8
-        max-idle: 500
-        max-active: 2000
-        max-wait: 10000
-    timeout: 5000
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+
+  zipkin:
+    sender:
+      type: rabbit
+  sleuth:
+    sampler:
+      probability: 1
+  rabbitmq:
+    host: 180.76.136.193
+    port: 5672
+    username: febs
+    password: 123456
 
 eureka:
   instance:
