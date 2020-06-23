@@ -14,14 +14,14 @@ spring:
   boot:
     admin:
       client:
-        url: http://localhost:8401
+        url: http://${febs-monitor-admin}:8401
         username: febs
         password: 123456
 
 
 eureka:
   instance:
-    hostname: localhost
+    hostname: ${febs-register}
   client:
     #是否将服务注册到注册中心，单节点false
     register-with-eureka: false

@@ -17,15 +17,15 @@ spring:
       datasource:
         base:
           username: root
-          password: root
+          password: 123456
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/febs_cloud_base?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+          url: jdbc:mysql://${mysql.url}:3306/febs_cloud_base?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
       #打印sql
       p6spy: true
   boot:
     admin:
       client:
-        url: http://localhost:8401
+        url: http://${febs-monitor-admin}:8401
         username: febs
         password: 123456
   autoconfigure:
@@ -38,7 +38,7 @@ spring:
     sampler:
       probability: 1
   rabbitmq:
-    host: 180.76.136.193
+    host: ${rabbitmq.url}
     port: 5672
     username: febs
     password: 123456
@@ -51,7 +51,7 @@ eureka:
     fetch-registry: true
     instance-info-replication-interval-seconds: 30
     serviceUrl:
-      defaultZone: http://febs:123456@localhost:8001/register/eureka/
+      defaultZone: http://febs:123456@${febs-register}:8001/register/eureka/
 
 #到认证服务器里校验当前请求头中的令牌是否为合法的令牌；
 #通过当前令牌获取对应的用户信息。
@@ -59,7 +59,7 @@ security:
   oauth2:
     resource:
       id: ${spring.application.name}
-      user-info-uri: http://localhost:8301/auth/user
+      user-info-uri: http://${febs-gateway}:8301/auth/user
 
 mybatis-plus:
   type-aliases-package: com.sgzs.febs.common.entity.system

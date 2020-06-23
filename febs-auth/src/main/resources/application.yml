@@ -6,7 +6,7 @@ spring:
     name: FEBS-Auth
   redis:
     database: 0
-    host: 180.76.136.193
+    host: ${redis.url}
     port: 6379
     lettuce:
       pool:
@@ -28,14 +28,14 @@ spring:
       datasource:
         base:
           username: root
-          password: root
+          password: 123456
           driver-class-name: com.mysql.cj.jdbc.Driver
-          url: jdbc:mysql://localhost:3306/febs_cloud_base?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
+          url: jdbc:mysql://${mysql.url}:3306/febs_cloud_base?useUnicode=true&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8
         #如果要继续添加数据源的话只需要在spring.datasource.dynamic.datasource下继续添加即可
   boot:
     admin:
       client:
-        url: http://localhost:8401
+        url: http://${febs-monitor-admin}:8401
         username: febs
         password: 123456
 
@@ -49,7 +49,7 @@ eureka:
     #去Eureka服务端上获取服务并缓存
     registry-fetch-interval-seconds: 3
     service-url:
-      defaultZone: http://febs:123456@localhost:8001/register/eureka/
+      defaultZone: http://febs:123456@${febs-register}:8001/register/eureka/
 
 #该路径下的实体类将自动配置别名，默认为类名首字母小写。配置别名后，便可以直接在MyBatis XML文件里使用了
 mybatis-plus:
