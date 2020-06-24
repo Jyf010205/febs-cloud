@@ -4,15 +4,53 @@ server:
 spring:
   application:
     name: FEBS-Gateway
-  #关闭数据库自动装配
   boot:
     admin:
       client:
         url: http://${febs-monitor-admin}:8401
         username: febs
         password: 123456
-  autoconfigure:
-    exclude: org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration,org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+  cloud:
+    gateway:
+      routes:
+        - id: FEBS-Auth
+          uri: lb://FEBS-Auth
+          predicates:
+            - Path=/auth/**
+          filters:
+            - name: Hystrix
+              args:
+                name: authfallback
+                fallbackUri: forward:/fallback/FEBS-Auth
+        - id: FEBS-Server-System
+          uri: lb://FEBS-Server-System
+          predicates:
+            - Path=/system/**
+          filters:
+            - name: Hystrix
+              args:
+                name: systemfallback
+                fallbackUri: forward:/fallback/FEBS-Server-System
+        - id: FEBS-Server-test
+          uri: lb://FEBS-Server-Test
+          predicates:
+            - Path=/test/**
+          filters:
+            - name: Hystrix
+              args:
+                name: testfallback
+                fallbackUri: forward:/fallback/FEBS-Server-Test
+      default-filters:
+        - StripPrefix=1
+
+#熔断回退
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
 
 eureka:
   instance:
@@ -25,34 +63,6 @@ eureka:
     serviceUrl:
       defaultZone: http://febs:123456@${febs-register}:8001/register/eureka/
 
-zuul:
-  routes:
-    auth:
-      path: /auth/**
-      serviceId: FEBS-Auth
-      #表示不过滤请求头信息，即请求的请求头信息将原封不动的转发出去
-      sensitiveHeaders: "*"
-    system:
-      path: /system/**
-      serviceId: FEBS-Server-System
-      sensitiveHeaders: "*"
-    test:
-      path: /test/**
-      serviceId: FEBS-Server-Test
-      sensitiveHeaders: "*"
-  retryable: true
-  ignored-services: "*"
-  ribbon:
-    eager-load:
-      enabled: true
-  #让默认的异常过滤器失效
-  SendErrorFilter:
-    error:
-      disable: true
-
-ribbon:
-  ReadTimeout: 3000
-
 info:
   app:
     name: ${spring.application.name}
@@ -63,7 +73,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: health,info,gateway
   endpoint:
     health:
       show-details: ALWAYS
