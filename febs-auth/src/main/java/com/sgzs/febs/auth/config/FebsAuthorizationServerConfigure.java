@@ -18,9 +18,15 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
+import org.springframework.security.oauth2.provider.token.DefaultUserAuthenticationConverter;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.redis.RedisTokenStore;
+
+import javax.sql.DataSource;
+import java.util.UUID;
 
 /**
  * @author: jianyufeng
@@ -47,6 +53,9 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
     private FebsAuthProperties authProperties;
     @Autowired
     private FebsWebResponseExceptionTranslator exceptionTranslator;
+
+    @Autowired
+    private DataSource dataSource;
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -75,7 +84,9 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
                 builder.withClient(client.getClient())
                         .secret(passwordEncoder.encode(client.getSecret()))
                         .authorizedGrantTypes(grantTypes)
-                        .scopes(client.getScope());
+                        .scopes(client.getScope())
+                        .accessTokenValiditySeconds(authProperties.getAccessTokenValiditySeconds())
+                        .refreshTokenValiditySeconds(authProperties.getRefreshTokenValiditySeconds());
             }
         }
     }
@@ -89,13 +100,25 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
         endpoints.tokenStore(tokenStore())
                 .userDetailsService(userDetailService)
                 .authenticationManager(authenticationManager)
-                .tokenServices(defaultTokenServices())
-                .exceptionTranslator(exceptionTranslator);
+//                .tokenServices(defaultTokenServices())
+                .exceptionTranslator(exceptionTranslator)
+                //JWT校验
+                .accessTokenConverter(jwtAccessTokenConverter());
     }
 
     @Bean
     public TokenStore tokenStore(){
-        return new RedisTokenStore(redisConnectionFactory);
+        //使用redis来存储令牌
+        RedisTokenStore redisTokenStore = new RedisTokenStore(redisConnectionFactory);
+        //解决每次生成的token都一样的问题
+        redisTokenStore.setAuthenticationKeyGenerator(OAuth2Authentication ->
+            UUID.randomUUID().toString()
+        );
+        return redisTokenStore;
+        //使用数据库来存储令牌
+//        return new JdbcTokenStore(dataSource);
+        //使用JWT生成令牌
+//        return new JwtTokenStore(jwtAccessTokenConverter());
     }
 
     @Primary
@@ -109,5 +132,16 @@ public class FebsAuthorizationServerConfigure extends AuthorizationServerConfigu
         //刷新令牌有效时间
         tokenServices.setRefreshTokenValiditySeconds(authProperties.getRefreshTokenValiditySeconds());
         return tokenServices;
+    }
+
+    @Bean
+    public JwtAccessTokenConverter jwtAccessTokenConverter() {
+        JwtAccessTokenConverter accessTokenConverter = new JwtAccessTokenConverter();
+        DefaultAccessTokenConverter defaultAccessTokenConverter = (DefaultAccessTokenConverter) accessTokenConverter.getAccessTokenConverter();
+        DefaultUserAuthenticationConverter userAuthenticationConverter = new DefaultUserAuthenticationConverter();
+        userAuthenticationConverter.setUserDetailsService(userDetailService);
+        defaultAccessTokenConverter.setUserTokenConverter(userAuthenticationConverter);
+        accessTokenConverter.setSigningKey("febs");
+        return accessTokenConverter;
     }
 }
