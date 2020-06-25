@@ -12,3 +12,8 @@ spring:
     user:
       name: febs
       password: 123456
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${nacos.url}:8001
+
